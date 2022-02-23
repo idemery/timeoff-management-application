@@ -14,26 +14,19 @@
 # 4. Login to running container (to update config (vi config/app.json): 
 #	docker exec -ti --user root alpine_timeoff /bin/sh
 # --------------------------------------------------------------------
-FROM alpine:3.8
+FROM node:15
 
 EXPOSE 3000
 
-LABEL org.label-schema.schema-version="1.0"
-LABEL org.label-schema.docker.cmd="docker run -d -p 3000:3000 --name alpine_timeoff"
+ENV NODE_ENV=production
 
-RUN apk add --no-cache \
-    git \
-    make \
-    nodejs npm \
-    python \
-    vim
-    
-RUN adduser --system app --home /app
-USER app
-WORKDIR /app
-RUN git clone https://github.com/timeoff-management/application.git timeoff-management
-WORKDIR /app/timeoff-management
+RUN git clone https://github.com/idemery/timeoff-management-application.git timeoff
 
-RUN npm install
+WORKDIR /timeoff
+
+RUN npm install --production
+
+RUN npm install --save mysql
 
 CMD npm start
+
